@@ -15,24 +15,43 @@
 #endregion
 
 using System;
+using System.Linq;
+using System.Reflection;
 using ConsoleHelpers;
+using Extensions;
+using Helpers;
 
 namespace Demoing
 {
   public static class Program
   {
+    private static readonly GenericFactory<IDemo> DemoFactory;
     private static readonly ConsoleMediator ConsoleMediator = new();
 
-    public static void Main(string[] args)
+    static Program()
     {
-      Console.WriteLine();
-      Console.WriteLine("This is a simple application to demonstrate console helper methods");
+      DemoFactory = new GenericFactory<IDemo>(SetupFactory);
+    }
 
-      Console.CursorLeft = 5;
-      var input = ConsoleMediator.AcceptYesNo("Please select from the following options", "Invalid input...");
+    public static void Main()
+    {
+      DemoFactory.Construct(nameof(YesNoDemo))
+        .Run(ConsoleMediator);
 
-      Console.WriteLine($"Thank you. You have chosen the option: {input}");
       Console.ReadKey(true);
+    }
+
+    private static void SetupFactory(GenericFactory<IDemo> fact)
+    {
+      var demos = Assembly.GetExecutingAssembly()
+        .GetTypesWithHelpAttribute<DemoAttribute>()
+        .Where(t => t.GetInterfaces().Contains(typeof(IDemo)))
+        .ToList();
+
+      foreach (var demo in demos)
+      {
+        fact.Register(demo.Name, () => Activator.CreateInstance(demo) as IDemo);
+      }
     }
   }
 }
