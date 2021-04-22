@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ConsoleHelpers
 {
@@ -9,20 +10,34 @@ namespace ConsoleHelpers
       console.CursorTop += 1;
       var (curLeft, curTop) = console.GetCursorPosition();
 
-      string input;
+      var yesNoQuestion = new[]
+      {
+        new ColorString(question, ConsoleColor.DarkYellow),
+        new ColorString(" [y/n]: ", ConsoleColor.Blue)
+      };
 
+      var input = RequestInput(console, yesNoQuestion, new[] {"y", "n"}, onErrorMessage, curLeft, curTop);
+
+      return input switch
+      {
+        "y" => Input.Yes,
+        "n" => Input.No,
+        _ => throw new InvalidOperationException()
+      };
+    }
+
+    private static string RequestInput(IConsole console, ICollection<ColorString> question,
+      ICollection<string> inputOptions, string onErrorMessage,
+      int curLeft, int curTop)
+    {
+      string input;
       while (true)
       {
-        console.SetCursorPosition(curLeft, curTop);
-        console.ClearLine();
-        console.CursorLeft = curLeft; // preserve CursorLeft offset
-
-        console.WriteColor(question, ConsoleColor.DarkYellow);
-        console.WriteColor(" [y/n]: ", ConsoleColor.Blue);
+        WriteInputQuestion(console, question, curLeft, curTop);
 
         input = console.ReadLine()?.Trim().ToLowerInvariant();
 
-        if (input == "y" || input == "n")
+        if (inputOptions.Contains(input))
         {
           console.ClearLine();
           console.CursorTop += 1;
@@ -40,12 +55,16 @@ namespace ConsoleHelpers
         }
       }
 
-      return input switch
-      {
-        "y" => Input.Yes,
-        "n" => Input.No,
-        _ => throw new InvalidOperationException()
-      };
+      return input;
     }
-}
+
+    private static void WriteInputQuestion(IConsole console, IEnumerable<ColorString> question, int curLeft, int curTop)
+    {
+      console.SetCursorPosition(curLeft, curTop);
+      console.ClearLine();
+      console.CursorLeft = curLeft; // preserve CursorLeft offset
+
+      console.WriteColor(question);
+    }
+  }
 }
