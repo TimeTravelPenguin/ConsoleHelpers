@@ -62,8 +62,6 @@ namespace ConsoleHelpers
       {
         rw.WriteColor(message);
       }
-
-      rw.WriteLine();
     }
 
     public static void WriteColor(this IConsole rw, string message, ConsoleColor foreground)
