@@ -31,9 +31,29 @@ namespace ConsoleHelpers
       };
     }
 
+    public static int AcceptInt(this IConsole console, string question, string onErrorMessage = null)
+    {
+      console.CursorTop += 1;
+      var (curLeft, curTop) = console.GetCursorPosition();
+
+      var intQuestion = new[]
+      {
+        new ColorString(question, ConsoleColor.DarkYellow),
+        new ColorString(" [int]: ", ConsoleColor.Blue)
+      };
+
+      static bool AcceptingCondition(string i)
+      {
+        return int.TryParse(i, out _);
+      }
+
+      var input = RequestInput(console, intQuestion, AcceptingCondition, onErrorMessage, curLeft, curTop);
+
+      return int.Parse(input);
+    }
+
     private static string RequestInput(IConsole console, ICollection<ColorString> question,
-      ICollection<string> inputOptions, string onErrorMessage,
-      int curLeft, int curTop)
+      Func<string, bool> acceptingCondition, string onErrorMessage, int curLeft, int curTop)
     {
       string input;
       while (true)
