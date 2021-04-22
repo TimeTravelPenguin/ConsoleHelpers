@@ -16,7 +16,12 @@ namespace ConsoleHelpers
         new ColorString(" [y/n]: ", ConsoleColor.Blue)
       };
 
-      var input = RequestInput(console, yesNoQuestion, new[] {"y", "n"}, onErrorMessage, curLeft, curTop);
+      static bool AcceptingCondition(string i)
+      {
+        return i is "y" or "n";
+      }
+
+      var input = RequestInput(console, yesNoQuestion, AcceptingCondition, onErrorMessage, curLeft, curTop);
 
       return input switch
       {
@@ -37,7 +42,7 @@ namespace ConsoleHelpers
 
         input = console.ReadLine()?.Trim().ToLowerInvariant();
 
-        if (inputOptions.Contains(input))
+        if (acceptingCondition.Invoke(input))
         {
           console.ClearLine();
           console.CursorTop += 1;
