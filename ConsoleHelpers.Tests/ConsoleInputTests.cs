@@ -21,37 +21,54 @@ namespace ConsoleHelpers.Tests
 {
   public class ConsoleInputTests
   {
-    [Fact]
-    public void ReturnsInput()
+    public class YesNoInputTests
     {
-      var fake = new FakeConsole();
+      [Fact]
+      public void ReturnsInput()
+      {
+        var fake = new FakeConsole();
 
-      var input = fake.AcceptYesNo("UnitTest");
+        var input = fake.AcceptYesNo("UnitTest");
 
-      input.Should()
-        .BeOfType<Input>();
+        input.Should()
+          .BeOfType<Input>();
+      }
+
+      [Fact]
+      public void ReturnsNo()
+      {
+        var fake = new FakeConsole(new[] {'n'});
+
+        var input = fake.AcceptYesNo("UnitTest");
+
+        input.Should()
+          .Be(Input.No);
+      }
+
+      [Fact]
+      public void ReturnsYes()
+      {
+        var fake = new FakeConsole(new[] {'y'});
+
+        var input = fake.AcceptYesNo("UnitTest");
+
+        input.Should()
+          .Be(Input.Yes);
+      }
     }
 
-    [Fact]
-    public void ReturnsNo()
+    public class IntInputTests
     {
-      var fake = new FakeConsole(new[] {'n'});
+      [Fact]
+      public void ReturnsInput()
+      {
+        var fake = new FakeConsole();
 
-      var input = fake.AcceptYesNo("UnitTest");
+        var input = fake.AcceptInt("UnitTest");
 
-      input.Should()
-        .Be(Input.No);
-    }
-
-    [Fact]
-    public void ReturnsYes()
-    {
-      var fake = new FakeConsole(new[] {'y'});
-
-      var input = fake.AcceptYesNo("UnitTest");
-
-      input.Should()
-        .Be(Input.Yes);
+        input.Should()
+          .BeOfType(typeof(int));
+      }
     }
   }
 }
