@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using ConsoleHelpers;
+using Demoing.Demos;
 using Extensions;
 using Helpers;
 
@@ -35,7 +36,7 @@ namespace Demoing
 
     public static void Main()
     {
-      DemoFactory.Construct(nameof(YesNoDemo))
+      DemoFactory.Construct(nameof(IntInputDemo))
         .Run(ConsoleMediator);
 
       Console.ReadKey(true);
