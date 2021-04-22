@@ -16,7 +16,7 @@
 
 using ConsoleHelpers;
 
-namespace Demoing
+namespace Demoing.Demos
 {
   [Demo]
   public class YesNoDemo : IDemo
