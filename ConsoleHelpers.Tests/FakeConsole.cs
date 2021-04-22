@@ -58,7 +58,7 @@ namespace ConsoleHelpers.Tests
 
     public (int left, int top) GetCursorPosition()
     {
-      throw new NotImplementedException();
+      return (0, 0);
     }
   }
 }
